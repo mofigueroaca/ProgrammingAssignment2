@@ -1,21 +1,37 @@
-## Put comments here that give an overall description of what your
-## functions do
-
-## Write a short comment describing this function
-## This function creates a special "matrix" object that can cache its inverse
+## The following functions calculate the inverse of a matrix and store it in cache
+## so it can be access from there once is computed in order not to waste time in this calculation
+## once it has been calculated. 
 
 
-makeCacheMatrix <- function(x = matrix()) {
+## This function creates a list that contains the matrix and the inverse of it
+## and store it in  cache.
 
-}
+makeCacheMatrix <- function(x = matrix()) { # receive a matrix as input
+    s <- NULL # s is the inverse of the matrix and its set to NULL 
+	set <- function(y) {
+                x <<- y
+                s <<- NULL
+        }
+	get <- function() { x } # function that return the value of the matrix
+	setinv <- function(solve) { # function that is called to make the inverse and store the value of it
+	    s <<- solve 
+		}
+	getinv <- function() { s } # function that return the cache value
+	list(get = get, setinv= setinv, getinv = getinv)
+	}
 
+## This function takes the object created by makeCacheMatrix() and return the inverse
+## either from di novo or from cache 
 
-## Write a short comment describing this function
-
-## This function computes the inverse of the special "matrix" returned by makeCacheMatrix above. 
-## If the inverse has already been calculated (and the matrix has not changed),
-## then the cachesolve should retrieve the inverse from the cache
-
-cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+cachesolve <- function(x, ...) { # function that takes an makeCacheMatrix() object and 
+                                 # return the inverse of the matrix di novo or from cache
+        s <- x$getinv() # gets the value of the inverse 
+        if(!is.null(s)) { # if the inverse has been calculated previously then 
+                message("getting cached data") # return a message that says that it is retrived from cache
+                return(s) 
+        }
+        data <- x$get() # if the inverse is not in cache then its calculated. First gets the data
+        s <- solve(data, ...) # then calculates the inverse
+        x$setinv(s) # stores it 
+        s # and returns it
 }
